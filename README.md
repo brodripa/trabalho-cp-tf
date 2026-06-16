@@ -1,4 +1,4 @@
-### Componentes Principais:
+<img width="1163" height="490" alt="image" src="https://github.com/user-attachments/assets/3a726527-4e5b-4ef5-a334-d9f7327c2277" />### Componentes Principais:
 1. **Amazon Route 53:** Camada de DNS responsável por resolver o nome de domínio e direcionar o tráfego de entrada para o balanceador de carga.
 2. **Elastic Load Balancing (ALB):** Um Application Load Balancer que atua como porta de entrada pública para o tráfego HTTP (porta 80), distribuindo as requisições de forma equilibrada entre as instâncias EC2 ativas nas sub-redes públicas.
 3. **Zonas de Disponibilidade (Zone A e Zone B):** Uso das zonas `us-east-1a` e `us-east-1b` para garantir alta disponibilidade. Caso uma zona sofra uma interrupção, a outra continuará operando normalmente.
@@ -35,3 +35,8 @@ trabalho-iac-aws/
         ├── main.tf          # Security Groups, Launch Template, ASG e User Data
         ├── variables.tf     # Entradas dependentes do módulo network
         └── outputs.tf       # Exportação de atributos de computação (SG IDs, ASG Name)
+
+
+
+
+<img width="1163" height="490" alt="image" src="https://github.com/user-attachments/assets/5f4a4198-65f9-4cd1-9593-93a81a4057eb" />
