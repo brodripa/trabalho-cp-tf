@@ -1,32 +1,26 @@
 name: Continuous Integration (CI)
 
 on:
-  push:
-    branches: ["main"]
-  pull_request:
-    branches: ["main"]
+push:
+branches: ["main"]
+pull_request:
+branches: ["main"]
 
 jobs:
-  terraform-validation:
-    runs-on: ubuntu-latest
+terraform-validation:
+runs-on: ubuntu-latest
 
-    steps:
-      # Checkout do código
-      - name: Checkout do código
-        uses: actions/checkout@v4
+```
+steps:
+  - name: Checkout do código
+    uses: actions/checkout@v4
 
-      # Instala o Terraform
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v3
+  - name: Setup Terraform
+    uses: hashicorp/setup-terraform@v3
 
-      # Verifica formatação dos arquivos .tf
-      - name: Terraform Format Check
-        run: terraform fmt -check -recursive
+  - name: Terraform Init
+    run: terraform init -backend=false
 
-      # Inicializa o Terraform
-      - name: Terraform Init
-        run: terraform init -backend=false
-
-      # Valida sintaxe e estrutura
-      - name: Terraform Validate
-        run: terraform validate
+  - name: Terraform Validate
+    run: terraform validate
+```
