@@ -1,41 +1,43 @@
-name: 'Terraform CI/CD'
+name: Continuous Deployment (CD)
 
 on:
+  workflow_run:
+    workflows: ["Continuous Integration (CI)"]
+    types:
+      - completed
   push:
-    branches: [ "main" ] # Dispara o CD quando algo entra na main
-  pull_request:
-    branches: [ "main" ] # Dispara o CI quando um Pull Request é aberto
+    branches: [ "main" ]
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
 
 jobs:
-  terraform:
-    name: 'Terraform Pipeline'
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
     runs-on: ubuntu-latest
+    
+    if: ${{ github.event_name == 'push' || github.event.workflow_run.conclusion == 'success' }}
 
     steps:
-    # 1. Checkout do código
-    - name: Checkout Código
-      uses: actions/checkout@v3
+    - name: Checkout do código
+      uses: actions/checkout@v4
 
-    # 2. Instalação do Terraform
-    - name: Setup Terraform
-      uses: hashicorp/setup-terraform@v2
+    - name: Configurar GitHub Pages
+      uses: actions/configure-pages@v4
+
+    - name: Upload do artefato do Pages
+      uses: actions/upload-pages-artifact@v3
       with:
-        terraform_version: "1.5.0"
+        path: 'site'
 
-    # 3. Inicialização dos Módulos
-    - name: Terraform Init
-      run: terraform init
-
-    # 4. Validação do código
-    - name: Terraform Validate
-      run: terraform validate
-
-    # 5. Planejamento (Roda tanto no PR quanto na Main)
-    - name: Terraform Plan
-      run: terraform plan -no-color
-
-    # 6. IMPLANTAÇÃO CONTÍNUA (CD)
-    # Este passo tem uma condição (if): só roda se for um PUSH na branch MAIN
-    - name: Terraform Apply (CD)
-      if: github.event_name == 'push' && github.ref == 'refs/heads/main'
-      run: terraform apply -auto-approve -no-color
+    - name: Deploy para o GitHub Pages
+      id: deployment
+      uses: actions/deploy-pages@v4
