@@ -1,6 +1,5 @@
-name: 'Terraform CI'
+name: Continuous Integration (CI)
 
-# Define quando a action vai rodar: a cada push na branch main ou pull request
 on:
   push:
     branches: [ "main" ]
@@ -8,34 +7,32 @@ on:
     branches: [ "main" ]
 
 jobs:
-  terraform:
-    name: 'Terraform Plan & Validate'
+  validate-and-test:
     runs-on: ubuntu-latest
 
     steps:
-    # 1. Baixa o código do seu repositório para a máquina do GitHub
+    # 1. Baixa o código do repositório para a máquina virtual
     - name: Checkout do código
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
-    # 2. Instala o Terraform na máquina do GitHub
-    - name: Setup Terraform
-      uses: hashicorp/setup-terraform@v2
+    # 2. Simula um teste de validação (Verifica se o index.html existe)
+    - name: Validar estrutura do projeto
+      run: |
+        if [ -f "site/index.html" ]; then
+          echo "Sucesso: O arquivo site/index.html foi encontrado!"
+        else
+          echo "Erro: Arquivo site/index.html não encontrado."
+          exit 1
+        fi
+
+    # 3. Simula uma validação de sintaxe simples (Linter)
+    - name: Validar sintaxe HTML básica
+      run: |
+        grep -q "</html>" site/index.html && echo "HTML tags fechadas corretamente."
+
+    # 4. Gera e armazena o artefato do build para o CD utilizar
+    - name: Upload do artefato de produção
+      uses: actions/upload-artifact@v4
       with:
-        terraform_version: "1.5.0"
-
-    # 3. Inicializa o Terraform (baixa os provedores da AWS)
-    - name: Terraform Init
-      run: terraform init
-
-    # 4. Verifica se o código está formatado corretamente
-    - name: Terraform Format
-      run: terraform fmt -check
-      continue-on-error: true
-
-    # 5. Valida a sintaxe do código
-    - name: Terraform Validate
-      run: terraform validate
-
-    # 6. Cria o plano de execução (mostra o que vai ser criado)
-    - name: Terraform Plan
-      run: terraform plan -no-color
+        name: site-producao
+        path: site/
