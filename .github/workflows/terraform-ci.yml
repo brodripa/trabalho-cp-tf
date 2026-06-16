@@ -18,17 +18,17 @@ jobs:
     # 2. Simula um teste de validação (Verifica se o index.html existe)
     - name: Validar estrutura do projeto
       run: |
-        if [ -f "site/index.html" ]; then
-          echo "Sucesso: O arquivo site/index.html foi encontrado!"
+        if [ -f "main.tf" ]; then
+          echo "Sucesso: O arquivo main foi encontrado!"
         else
-          echo "Erro: Arquivo site/index.html não encontrado."
+          echo "Erro: Arquivo main.tf não encontrado."
           exit 1
         fi
 
     # 3. Simula uma validação de sintaxe simples (Linter)
     - name: Validar sintaxe HTML básica
       run: |
-        grep -q "</html>" site/index.html && echo "HTML tags fechadas corretamente."
+        grep -q "</html>" main.tf && echo "main tags fechadas corretamente."
 
     # 4. Gera e armazena o artefato do build para o CD utilizar
     - name: Upload do artefato de produção
