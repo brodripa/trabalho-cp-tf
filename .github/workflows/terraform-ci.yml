@@ -2,37 +2,31 @@ name: Continuous Integration (CI)
 
 on:
   push:
-    branches: [ "main" ]
+    branches: ["main"]
   pull_request:
-    branches: [ "main" ]
+    branches: ["main"]
 
 jobs:
-  validate-and-test:
+  terraform-validation:
     runs-on: ubuntu-latest
 
     steps:
-    # 1. Baixa o código do repositório para a máquina virtual
-    - name: Checkout do código
-      uses: actions/checkout@v4
+      # Checkout do código
+      - name: Checkout do código
+        uses: actions/checkout@v4
 
-    # 2. Simula um teste de validação (Verifica se o index.html existe)
-    - name: Validar estrutura do projeto
-      run: |
-        if [ -f "main.tf" ]; then
-          echo "Sucesso: O arquivo main foi encontrado!"
-        else
-          echo "Erro: Arquivo main.tf não encontrado."
-          exit 1
-        fi
+      # Instala o Terraform
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
 
-    # 3. Simula uma validação de sintaxe simples (Linter)
-    - name: Validar sintaxe HTML básica
-      run: |
-        grep -q "</html>" main.tf && echo "main tags fechadas corretamente."
+      # Verifica formatação dos arquivos .tf
+      - name: Terraform Format Check
+        run: terraform fmt -check -recursive
 
-    # 4. Gera e armazena o artefato do build para o CD utilizar
-    - name: Upload do artefato de produção
-      uses: actions/upload-artifact@v4
-      with:
-        name: site-producao
-        path: site/
+      # Inicializa o Terraform
+      - name: Terraform Init
+        run: terraform init -backend=false
+
+      # Valida sintaxe e estrutura
+      - name: Terraform Validate
+        run: terraform validate
