@@ -38,5 +38,3 @@ trabalho-iac-aws/
 
 
 
-
-<img width="1163" height="490" alt="image" src="https://github.com/user-attachments/assets/5f4a4198-65f9-4cd1-9593-93a81a4057eb" />
